@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#147a72">
+    <meta name="description" content="日本語からラオス語を検索できる辞書・フレーズ集PWA">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="ラオス語辞書">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+    <title>ラオス語辞書</title>
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <div class="app">
+      <form class="search-area search-header" role="search" autocomplete="off">
+        <div class="search-inner">
+          <div class="title-row">
+            <button id="manual-open" class="info-button" type="button" aria-label="使い方を開く" title="使い方">i</button>
+            <h1>ラオス語辞書</h1>
+            <button id="highlight-toggle" class="highlight-toggle" type="button" aria-pressed="false">強調 OFF</button>
+            <button id="phrase-add-open" class="add-phrase-button" type="button" aria-label="フレーズを追加" title="フレーズを追加">+</button>
+            <button id="phrase-csv" class="csv-button" type="button" aria-label="追加フレーズをCSV保存" title="追加フレーズをCSV保存">CSV</button>
+            <button id="data-open" class="data-button" type="button" aria-label="マスターデータ管理" title="マスターデータ管理">データ</button>
+            <div id="status">辞書データを読み込み中</div>
+          </div>
+          <label class="search-box">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.2-4.2m1.2-5.3a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z"></path></svg>
+            <input id="search" type="search" inputmode="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="検索">
+            <button id="clear" type="button" aria-label="検索をクリア">×</button>
+          </label>
+          <div class="view-tabs" aria-label="表示切替">
+            <button class="view-button active" type="button" data-view="all">辞書見出し検索</button>
+            <button class="view-button" type="button" data-view="fulltext">例文フレーズ検索</button>
+            <button class="view-button" type="button" data-view="phrases">フレーズ集</button>
+            <button class="view-button" type="button" data-view="favorites">★お気に入り</button>
+          </div>
+        </div>
+      </form>
+      <main class="content-scroll">
+        <section id="results" aria-live="polite"></section>
+        <div id="empty">見つかりませんでした</div>
+        <button id="more" type="button">さらに表示</button>
+      </main>
+    </div>
+    <div id="manual" class="manual-overlay" aria-hidden="true">
+      <section class="manual-panel" role="dialog" aria-modal="true" aria-labelledby="manual-title">
+        <div class="manual-head">
+          <h2 id="manual-title">使い方</h2>
+          <button id="manual-close" class="manual-close" type="button" aria-label="使い方を閉じる">×</button>
+        </div>
+        <div class="manual-body">
+          <h3>検索モード</h3>
+          <p>検索欄へ文字を入力し、目的に合うボタンを選びます。</p>
+          <ul>
+            <li><strong>辞書見出し検索</strong>: 辞書の見出し語だけを検索します。初期表示では一部の助動詞・関係代名詞を表示しています。</li>
+            <li><strong>例文フレーズ検索</strong>: 辞書の見出し、本文、例文、関連表現、フレーズ集をまとめて検索します。初期表示では一部の助動詞・関係代名詞を表示しています。</li>
+            <li><strong>フレーズ集</strong>: 各カテゴリのフレーズを表示し、その中だけを検索します。カテゴリ見出しを押すと開閉できます。</li>
+            <li><strong>★お気に入り</strong>: 登録した辞書項目とフレーズを表示し、その中だけを検索します。</li>
+          </ul>
+          <h3>単語を見る</h3>
+          <p>辞書には日本語、ローマ字読み、品詞、ラオス語、発音記号、例文・関連表現が表示されます。</p>
+          <h3>コピーする</h3>
+          <p>ラオス語の右側にあるコピーアイコンを押すと、その単語や例文をコピーできます。候補が複数ある例文は、候補ごとに個別にコピーできます。</p>
+          <h3>お気に入り</h3>
+          <p>辞書項目やフレーズの右上にある☆を押すと、お気に入りへ登録できます。もう一度押すと解除できます。</p>
+          <h3>ハイライト</h3>
+          <p>タイトル右側の「強調 OFF」を押すと「強調 ON」に切り替わり、検索語と一致する部分を色付きで表示します。もう一度押すと解除できます。</p>
+          <h3>マスターデータ</h3>
+          <p>初回は「データ」を押し、iCloud Driveに保存した最終辞書マスター由来のJSONと、正式フレーズ集JSONを読み込みます。</p>
+          <h3>フレーズ追加</h3>
+          <p>「+」を押すと、自分用のフレーズ・単語を追加できます。日本語とラオス語は必須、カタカナ発音とアルファベット発音は任意です。</p>
+          <h3>追加フレーズの編集・削除</h3>
+          <p>自分で追加したフレーズには「自分で追加」ラベルが付き、「編集」「削除」ボタンが表示されます。編集では入力済みの内容を直して保存できます。削除するときは確認画面が出ます。通常の収録データは編集・削除できません。</p>
+          <h3>CSV保存</h3>
+          <p>「CSV」を押すと、自分で追加したフレーズ・単語だけを id, japanese, lao, kana, roman, created_at, updated_at の7列CSVファイルで保存できます。正式フレーズ集へ統合するための素材として使用します。</p>
+        </div>
+      </section>
+    </div>
+    <div id="data-overlay" class="data-overlay" aria-hidden="true">
+      <section class="data-panel" role="dialog" aria-modal="true" aria-labelledby="data-title">
+        <div class="data-head">
+          <h2 id="data-title">マスターデータ</h2>
+          <button id="data-close" class="manual-close" type="button" aria-label="データ管理を閉じる">×</button>
+        </div>
+        <div class="data-body">
+          <div class="data-item">
+            <div>
+              <h3>辞書データ</h3>
+              <p id="dictionary-data-status">未読み込み</p>
+            </div>
+            <button id="dictionary-data-select" class="data-select-button" type="button">ファイルを選択</button>
+            <input id="dictionary-data-file" type="file" accept=".json,application/json" hidden>
+          </div>
+          <div class="data-item">
+            <div>
+              <h3>フレーズ集データ</h3>
+              <p id="phrase-data-status">未読み込み</p>
+            </div>
+            <button id="phrase-data-select" class="data-select-button" type="button">ファイルを選択</button>
+            <input id="phrase-data-file" type="file" accept=".json,application/json" hidden>
+          </div>
+          <div id="data-error" class="form-error" role="alert"></div>
+        </div>
+      </section>
+    </div>
+    <div id="phrase-form-overlay" class="form-overlay" aria-hidden="true">
+      <section class="form-panel" role="dialog" aria-modal="true" aria-labelledby="phrase-form-title">
+        <div class="form-head">
+          <h2 id="phrase-form-title">フレーズを追加</h2>
+          <button id="phrase-form-close" class="manual-close" type="button" aria-label="フォームを閉じる">×</button>
+        </div>
+        <form id="phrase-form" class="phrase-form" autocomplete="off">
+          <input id="phrase-edit-id" type="hidden">
+          <label>
+            <span>日本語 <strong>必須</strong></span>
+            <input id="phrase-ja" type="text" required>
+          </label>
+          <label>
+            <span>ラオス語 <strong>必須</strong></span>
+            <input id="phrase-lao" class="lao-input" type="text" lang="lo" required>
+          </label>
+          <label>
+            <span>カタカナ発音（任意）</span>
+            <input id="phrase-reading" type="text">
+          </label>
+          <label>
+            <span>アルファベット発音（任意）</span>
+            <input id="phrase-roman" type="text" autocapitalize="off" spellcheck="false">
+          </label>
+          <div id="phrase-form-error" class="form-error" role="alert"></div>
+          <div class="form-actions">
+            <button id="phrase-form-cancel" class="form-cancel" type="button">閉じる</button>
+            <button id="phrase-form-save" class="form-save" type="submit">追加</button>
+          </div>
+        </form>
+      </section>
+    </div>
+    <script src="./phonetic-glyphs.js"></script>
+    <script src="./data-store.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
