@@ -46,13 +46,14 @@ h1 { margin: 0; font-size: 16px; letter-spacing: 0; line-height: 1.25; }
 #status { min-width: 0; overflow: hidden; color: var(--muted); font-size: 10px; line-height: 1.25; text-align: right; white-space: nowrap; }
 #results { display: grid; gap: 10px; }
 article { padding: 13px 12px 15px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
-.entry-head { display: grid; grid-template-columns: 1fr auto; gap: 7px 8px; }
+.entry-head { display: grid; grid-template-columns: 1fr auto; gap: 3px 8px; }
 .head { font-size: 17px; font-weight: 700; line-height: 1.45; }
 .reading { margin-left: 6px; color: var(--muted); font-size: 14px; font-weight: 500; }
 .favorite-button { width: 34px; height: 34px; border: 1px solid #d8d0c4; border-radius: 50%; color: #a59b8c; background: var(--soft); font-size: 18px; line-height: 1; }
 .favorite-button.active { border-color: #d7a05d; color: #b05f2a; background: #fff4cd; }
 .entry-symbols { grid-column: 1 / -1; }
 .entry-symbols, .sense-symbols { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+.entry-symbols { margin-top: 2px; }
 .chip { display: inline-flex; padding: 3px 7px; border: 1px solid #d8d0c4; border-radius: 999px; color: var(--muted); background: var(--soft); font-size: 12px; line-height: 1.3; }
 .senses { display: grid; gap: 9px; margin-top: 10px; }
 .sense { padding-top: 10px; border-top: 1px solid var(--line); }

@@ -1,4 +1,4 @@
-const VERSION = "20260607-4";
+const VERSION = "20260607-5";
 const CACHE_NAME = "lao-dictionary-v" + VERSION;
 const VERSION_QUERY = "?v=" + VERSION;
 const ASSETS = [
